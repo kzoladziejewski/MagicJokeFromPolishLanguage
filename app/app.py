@@ -9,6 +9,8 @@ class MagicJokeFromPolishLanguage:
         self.all_words = []
         self.jokes = []
         self.words_dict = defaultdict(list)
+        self.liczba_slow = 0
+        self.liczba_wszystkich_slow = 0
 
     def compare_string(self, basic_string, cutet_string):
         if basic_string[1:] == cutet_string:
@@ -56,24 +58,29 @@ class MagicJokeFromPolishLanguage:
 
     def generate_jokes(self):
         number_list = []
+        stary_procent = 0
         for key, value in self.words_dict.items():
             number_list.append(key)
         number_list.sort(reverse=True)
         for number in number_list:
             with open("stan.txt","a") as file:
-                file.writelines(number)
-
+                file.writelines(str(number))
             min_index = number-1
             if (min_index) not in number_list:
                 break
             for word in self.words_dict.get(number):
+                self.liczba_slow+=1
                 if word[1:] in self.words_dict.get(min_index):
-                    print("Wykonano {:f} %".format(self.words_dict.get(number).index(word) / len(self.words_dict.get(number) * 100)))
+                    # procent = self.words_dict.get(number).index(word) / len(self.words_dict.get(number)) * 100
+                    procent = self.liczba_slow / self.liczba_wszystkich_slow * 100
+                    if procent != stary_procent:
+                        print("Wykonano {:f} %".format(stary_procent))
+                        stary_procent = procent
                     self.save_jokes(self.__generate_joke(word, word[1:]))
                     continue
 
     def __generate_joke(self, first_word, second_word):
-        return "Jak jest {} bez {} ?\n{}!\n\n".format(first_word, second_word, first_word[0])
+        return "Jak jest {} bez {} ?\n{}!\n".format(first_word, second_word, first_word[0])
 
     def save_jokes(self, joke):
         with open("joke.txt", 'a') as file:
@@ -82,6 +89,8 @@ class MagicJokeFromPolishLanguage:
     def clean_up_word(self):
         for word in self.all_words:
             self.words_dict[len(word)].append(word)
+        for val in self.words_dict.keys():
+            self.liczba_wszystkich_slow+=len(self.words_dict.get(val))
 
 if __name__ == "__main__":
     mjfpl = MagicJokeFromPolishLanguage()
