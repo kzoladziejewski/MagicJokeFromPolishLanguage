@@ -60,6 +60,9 @@ class MagicJokeFromPolishLanguage:
             number_list.append(key)
         number_list.sort(reverse=True)
         for number in number_list:
+            with open("stan.txt","a") as file:
+                file.writelines(number)
+
             min_index = number-1
             if (min_index) not in number_list:
                 break
