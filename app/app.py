@@ -19,7 +19,8 @@ class MagicJokeFromPolishLanguage:
         list_of_sub_url = []
         for element in returned:
                 sub_url = self.__cut_url(element)
-                list_of_sub_url.append(sub_url)
+                if sub_url:
+                    list_of_sub_url.append(sub_url)
         return list_of_sub_url
 
     def __cut_url(self, element):
@@ -31,6 +32,7 @@ class MagicJokeFromPolishLanguage:
     def get_all_subhrefs_from_page(self, list_of_suburl):
         list_of_sub_url = []
         for url in list_of_suburl:
+            print(self.base_url, url)
             returned= requests.get("{}{}".format(self.base_url, url)).text
             returned = returned.split("<td>")
 
@@ -41,6 +43,7 @@ class MagicJokeFromPolishLanguage:
         return list_of_sub_url
 
     def get_words(self, url_to_call):
+        print(self.base_url, url_to_call)
         returned = requests.get("{}{}".format(self.base_url, url_to_call)).text
         returned = returned.split("itemprop=\"itemListElement\"")
 
@@ -67,6 +70,8 @@ if __name__ == "__main__":
     url_list = mjfpl.get_all_hrefs_from_page()
     url_sub_list = mjfpl.get_all_subhrefs_from_page(url_list)
     for element in url_sub_list:
-        mjfpl.get_words()
+        mjfpl.get_words(element)
+        print("Zbieranie slow, zebrano juz: {}".format(len(mjfpl.all_words)))
+    print("Koniec zbierania slow. Zebrano {}".format(len(mjfpl.all_words)))
     mjfpl.generate_jokes()
     mjfpl.save_jokes()
