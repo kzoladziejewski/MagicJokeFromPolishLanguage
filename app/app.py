@@ -67,14 +67,16 @@ class MagicJokeFromPolishLanguage:
             for word in self.words_dict.get(number):
                 for val in self.words_dict.get(min_index):
                     if self.compare_string(word, val):
-                        self.jokes.append(self.__generate_joke(word, val))
+                        # self.jokes.append(self.__generate_joke(word, val))
+                        self.save_jokes(self.__generate_joke(word, val))
+                        break
 
     def __generate_joke(self, first_word, second_word):
         return "Jak jest {} bez {} ?\n{}!\n\n".format(first_word, second_word, first_word[0])
 
-    def save_jokes(self):
-        with open("joke.txt", 'w') as file:
-            file.write(self.jokes)
+    def save_jokes(self, joke):
+        with open("joke.txt", 'a') as file:
+            file.write(joke)
 
     def clean_up_word(self):
         for word in self.all_words:
