@@ -1,5 +1,6 @@
 import requests
 
+from collections import defaultdict
 class MagicJokeFromPolishLanguage:
 
     def __init__(self):
@@ -7,7 +8,7 @@ class MagicJokeFromPolishLanguage:
         self.base_page = "https://polski-slownik.pl/wszystkie-slowa-jezyka-polskiego.php"
         self.all_words = []
         self.jokes = []
-
+        self.words_dict = defaultdict(list)
     def compare_string(self, basic_string, cutet_string):
         if basic_string[1:] == cutet_string:
             return True
@@ -53,10 +54,19 @@ class MagicJokeFromPolishLanguage:
                 self.all_words.append(word)
 
     def generate_jokes(self):
-        for first_word in self.all_words:
-            for second_word in self.all_words:
-                if self.compare_string(first_word, second_word):
-                    self.jokes.append(self.__generate_joke(first_word, second_word))
+        min = 100
+        for key, value in self.words_dict.items():
+            if key < min:
+                min = key
+        for key, value in self.words_dict.items():
+            actual_index = key - 1
+            if actual_index == min:
+                break
+            for word in value:
+                for val in self.words_dict.get(actual_index):
+                    print(val)
+                    if self.compare_string(word, val):
+                        self.jokes.append(self.__generate_joke(word, val))
 
     def __generate_joke(self, first_word, second_word):
         return "Jak jest {} bez {} ? \n {} \n\n!".format(first_word, second_word, first_word[0])
@@ -64,6 +74,11 @@ class MagicJokeFromPolishLanguage:
     def save_jokes(self):
         with open("joke.txt") as file:
             file.write(self.jokes)
+
+    def clean_up_word(self):
+
+        for word in self.all_words:
+            self.words_dict[len(word)].append(word)
 
 if __name__ == "__main__":
     mjfpl = MagicJokeFromPolishLanguage()
@@ -73,5 +88,8 @@ if __name__ == "__main__":
         mjfpl.get_words(element)
         print("Zbieranie slow, zebrano juz: {}".format(len(mjfpl.all_words)))
     print("Koniec zbierania slow. Zebrano {}".format(len(mjfpl.all_words)))
+    mjfpl.clean_up_word()
+    print("Koniec czyszczenia slownika")
     mjfpl.generate_jokes()
+    print("Wygenerowalo zarty, czas na zapis")
     mjfpl.save_jokes()

@@ -1,7 +1,7 @@
 import pytest
 
 from app.app import MagicJokeFromPolishLanguage
-
+from collections import defaultdict
 class TestApp:
     mjfpl = MagicJokeFromPolishLanguage()
 
@@ -40,5 +40,11 @@ class TestApp:
         assert "ażurze" in self.mjfpl.all_words
 
     def test_generator_joke(self):
-        self.mjfpl.all_words = ["abacie", "ażurze", "abbami", "bacie", "żurze", "bbami"]
+        self.mjfpl.words_dict = defaultdict(list)
+        self.mjfpl.words_dict[5].append("abbami")
+        self.mjfpl.words_dict[4].append("bbami")
+        self.mjfpl.words_dict[5].append("abacie")
+        self.mjfpl.words_dict[4].append("bacie")
+        self.mjfpl.words_dict[5].append("ażurze")
+        self.mjfpl.words_dict[4].append("żurze")
         self.mjfpl.generate_jokes()
