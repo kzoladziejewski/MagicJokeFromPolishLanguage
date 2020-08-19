@@ -9,6 +9,7 @@ class MagicJokeFromPolishLanguage:
         self.all_words = []
         self.jokes = []
         self.words_dict = defaultdict(list)
+
     def compare_string(self, basic_string, cutet_string):
         if basic_string[1:] == cutet_string:
             return True
@@ -54,29 +55,28 @@ class MagicJokeFromPolishLanguage:
                 self.all_words.append(word)
 
     def generate_jokes(self):
-        min = 100
+        number_list = []
         for key, value in self.words_dict.items():
-            if key < min:
-                min = key
-        for key, value in self.words_dict.items():
-            actual_index = key - 1
-            if actual_index == min:
+            number_list.append(key)
+        number_list.sort(reverse=True)
+        for number in number_list:
+            min_index = number-1
+            if (min_index) not in number_list:
                 break
-            for word in value:
-                for val in self.words_dict.get(actual_index):
-                    print(val)
+            print("Biore {} i {}".format(number, min_index))
+            for word in self.words_dict.get(number):
+                for val in self.words_dict.get(min_index):
                     if self.compare_string(word, val):
                         self.jokes.append(self.__generate_joke(word, val))
 
     def __generate_joke(self, first_word, second_word):
-        return "Jak jest {} bez {} ? \n {} \n\n!".format(first_word, second_word, first_word[0])
+        return "Jak jest {} bez {} ?\n{}!\n\n".format(first_word, second_word, first_word[0])
 
     def save_jokes(self):
-        with open("joke.txt") as file:
+        with open("joke.txt", 'w') as file:
             file.write(self.jokes)
 
     def clean_up_word(self):
-
         for word in self.all_words:
             self.words_dict[len(word)].append(word)
 

@@ -48,3 +48,7 @@ class TestApp:
         self.mjfpl.words_dict[5].append("ażurze")
         self.mjfpl.words_dict[4].append("żurze")
         self.mjfpl.generate_jokes()
+
+    def test_save_jokes(self):
+        self.mjfpl.jokes = """"Jak jest mucha bez ucha ? \n m \n\n! """
+        self.mjfpl.save_jokes()
