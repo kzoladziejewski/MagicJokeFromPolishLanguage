@@ -63,13 +63,11 @@ class MagicJokeFromPolishLanguage:
             min_index = number-1
             if (min_index) not in number_list:
                 break
-            print("Biore {} i {}".format(number, min_index))
             for word in self.words_dict.get(number):
-                for val in self.words_dict.get(min_index):
-                    if self.compare_string(word, val):
-                        # self.jokes.append(self.__generate_joke(word, val))
-                        self.save_jokes(self.__generate_joke(word, val))
-                        break
+                if word[1:] in self.words_dict.get(min_index):
+                    print("Wykonano {:f} %".format(self.words_dict.get(number).index(word) / len(self.words_dict.get(number) * 100)))
+                    self.save_jokes(self.__generate_joke(word, word[1:]))
+                    continue
 
     def __generate_joke(self, first_word, second_word):
         return "Jak jest {} bez {} ?\n{}!\n\n".format(first_word, second_word, first_word[0])
