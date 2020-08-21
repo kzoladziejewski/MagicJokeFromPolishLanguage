@@ -1,6 +1,9 @@
 import requests
 
 from collections import defaultdict
+from .models.word_model import WordModel
+from .db import SessionLocal, engine, Base
+
 class MagicJokeFromPolishLanguage:
 
     def __init__(self):
@@ -84,11 +87,17 @@ class MagicJokeFromPolishLanguage:
         with open("joke.txt", 'a') as file:
             file.write(joke)
 
-    def clean_up_word(self):
+    def add_words_to_database(self):
+        db = SessionLocal()
+        Base.metadata.create_all(bind=engine)
         for word in self.all_words:
-            self.words_dict[len(word)].append(word)
-        for val in self.words_dict.keys():
-            self.liczba_wszystkich_slow+=len(self.words_dict.get(val))
+            new_word = WordModel(word, len(word))
+            db.add(new_word)
+            db.commit()
+        db.close()
+
+    # def merge_find(self, szukane, lista, dlugosc):
+
 
 if __name__ == "__main__":
     mjfpl = MagicJokeFromPolishLanguage()

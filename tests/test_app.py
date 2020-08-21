@@ -52,3 +52,16 @@ class TestApp:
     def test_save_jokes(self):
         self.mjfpl.jokes = """"Jak jest mucha bez ucha ? \n m \n\n! """
         self.mjfpl.save_jokes()
+
+    # def test_merge_find_word(self):
+        # self.mjfpl.words_dict = defaultdict(list)
+        # lista_slow_testowa = []
+        # for litera in self.alfabet:
+        #     lista_slow_testowa.append("a{}a".format(litera))
+
+        # assert self.mjfpl.merge_find(szukane="afa", lista= lista_slow_testowa, dlugosc = len(lista_slow_testowa)) == "afa"
+
+    def test_clean_up(self):
+        for litera in self.alfabet:
+            self.mjfpl.all_words.append("a{}a".format(litera))
+        self.mjfpl.clean_up_word()
