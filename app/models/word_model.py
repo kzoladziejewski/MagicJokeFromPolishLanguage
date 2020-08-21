@@ -17,9 +17,8 @@ class WordModel(Base):
     @classmethod
     def find_by_word(cls, word):
         return cls.query.filter_by(word=word).first()
-    
-    
-    def save_to_db(self):
-        self.session.add(self)
-        self.session.commit()
+
+    @classmethod
+    def get_all_word(cls, len):
+        return cls.query.filter_by(len_word=len).all()
     
