@@ -93,8 +93,6 @@ class MagicJokeFromPolishLanguage:
     def merge_find(self, looking, lista_words, index):
         new_list = []
         new_index = int(index/2)
-        print(lista_words)
-        print(index)
         if index == 0:
             if looking == lista_words[index]:
                 return True
@@ -102,8 +100,6 @@ class MagicJokeFromPolishLanguage:
         # if looking == lista_words[index]:
         #     return True
         if looking < lista_words[new_index]:
-            print(lista_words[new_index])
-            print("odpalilem sie")
             new_list = lista_words[:new_index]
             return self.merge_find(looking, new_list, new_index)
         elif looking >= lista_words[new_index]:
