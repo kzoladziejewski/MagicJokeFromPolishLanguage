@@ -69,7 +69,7 @@ class MagicJokeFromPolishLanguage:
             for word in self.words_dict.get(number):
                 self.liczba_slow+=1
                 if self.merge_find(word[1:], self.words_dict.get(min_index), len(self.words_dict.get(min_index))):
-                    procent = self.liczba_slow / self.liczba_wszystkich_slow * 100
+                    procent = int(self.liczba_slow / self.liczba_wszystkich_slow * 100)
                     if procent != stary_procent:
                         print("Wykonano {:f} %".format(stary_procent))
                         stary_procent = procent
