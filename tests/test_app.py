@@ -55,10 +55,26 @@ class TestApp:
     def test_save_jokes(self):
         self.mjfpl.save_jokes(""""Jak jest mucha bez ucha ? \n m \n\n! """)
 
-    def test_merge_find(self):
+    def test_merge_find_pos_odd(self):
+        new_list = []
         for litera in self.alfabet:
             self.mjfpl.all_words.append("a{}a".format(litera))
-        assert self.mjfpl.merge_find(looking = "afa", lista_words = self.mjfpl.all_words, index = len(self.mjfpl.all_words)) == True
+        for word in self.mjfpl.all_words:
+            word = word.replace("ą","a").replace("ć","c").replace("ę","e").replace("ł","l").replace("ń","n").replace("ó",'o').replace("ż",'z').replace("ś","s").replace("ź","z")
+            new_list.append(word)
+        assert self.mjfpl.merge_find(looking = "afa", lista_words = new_list, index = len(self.mjfpl.all_words)) == True
+
+    def test_merge_fin_pos_even(self):
+        new_list = []
+        for litera in self.alfabet:
+            self.mjfpl.all_words.append("a{}a".format(litera))
+
+        for word in self.mjfpl.all_words:
+            word = word.replace("ą","a").replace("ć","c").replace("ę","e").replace("ł","l").replace("ń","n").replace("ó",'o').replace("ż",'z').replace("ś","s").replace("ź","z")
+            new_list.append(word)
+        new_list.append("bbb")
+        assert self.mjfpl.merge_find(looking = "afa", lista_words = new_list, index = len(self.mjfpl.all_words)) == True
+
 
     def test_merge_find_negative(self):
         for litera in self.alfabet:

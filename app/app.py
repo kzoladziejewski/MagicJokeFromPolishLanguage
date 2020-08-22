@@ -85,6 +85,7 @@ class MagicJokeFromPolishLanguage:
 
     def clean_up_word(self):
         for word in self.all_words:
+            word = word.replace("ą","a").replace("ć","c").replace("ę","e").replace("ł","l").replace("ń","n").replace("ó",'o').replace("ż",'z').replace("ś","s").replace("ź","z")
             self.words_dict[len(word)].append(word)
         for val in self.words_dict.keys():
             self.liczba_wszystkich_slow+=len(self.words_dict.get(val))
@@ -92,16 +93,20 @@ class MagicJokeFromPolishLanguage:
     def merge_find(self, looking, lista_words, index):
         new_list = []
         new_index = int(index/2)
-        if index <= 1:
-            if looking == lista_words[index-1]:
+        print(lista_words)
+        print(index)
+        if index == 0:
+            if looking == lista_words[index]:
                 return True
             return False
-        if looking == lista_words[new_index]:
-            return True
+        # if looking == lista_words[index]:
+        #     return True
         if looking < lista_words[new_index]:
+            print(lista_words[new_index])
+            print("odpalilem sie")
             new_list = lista_words[:new_index]
             return self.merge_find(looking, new_list, new_index)
-        elif looking > lista_words[new_index]:
+        elif looking >= lista_words[new_index]:
             new_list = lista_words[new_index:]
             return self.merge_find(looking, new_list, new_index)
 
