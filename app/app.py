@@ -1,15 +1,9 @@
 import requests
-import sqlalchemy
-from collections import defaultdict
-from .models.word_model import WordModel
-from .db import SessionLocal, engine, Base
 
+from collections import defaultdict
 class MagicJokeFromPolishLanguage:
 
     def __init__(self):
-        # db = SessionLocal()
-        self.db = SessionLocal()
-        Base.metadata.create_all(bind=engine)
         self.base_url = "https://polski-slownik.pl/"
         self.base_page = "https://polski-slownik.pl/wszystkie-slowa-jezyka-polskiego.php"
         self.all_words = []
@@ -63,10 +57,10 @@ class MagicJokeFromPolishLanguage:
                 self.all_words.append(word)
 
     def generate_jokes(self):
-        metadata = sqlalchemy.MetaData()
-        print(repr(metadata.tables["word"]))
         number_list = []
         stary_procent = 0
+        for key, value in self.words_dict.items():
+            number_list.append(key)
         number_list.sort(reverse=True)
         for number in number_list:
             min_index = number-1
@@ -90,14 +84,11 @@ class MagicJokeFromPolishLanguage:
         with open("joke.txt", 'a') as file:
             file.write(joke)
 
-    def add_words_to_database(self):
-
+    def clean_up_word(self):
         for word in self.all_words:
-            new_word = WordModel(word, len(word))
-            self.db.add(new_word)
-        self.db.commit()
-        self.db.close()
-
+            self.words_dict[len(word)].append(word)
+        for val in self.words_dict.keys():
+            self.liczba_wszystkich_slow+=len(self.words_dict.get(val))
 
 if __name__ == "__main__":
     mjfpl = MagicJokeFromPolishLanguage()
@@ -107,7 +98,7 @@ if __name__ == "__main__":
         mjfpl.get_words(element)
         print("Zbieranie slow, zebrano juz: {}".format(len(mjfpl.all_words)))
     print("Koniec zbierania slow. Zebrano {}".format(len(mjfpl.all_words)))
-    mjfpl.add_words_to_database()
+    mjfpl.clean_up_word()
     print("Koniec czyszczenia slownika")
     mjfpl.generate_jokes()
     print("Wygenerowalo zarty, czas na zapis")
