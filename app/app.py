@@ -68,8 +68,7 @@ class MagicJokeFromPolishLanguage:
                 break
             for word in self.words_dict.get(number):
                 self.liczba_slow+=1
-                if word[1:] in self.words_dict.get(min_index):
-                    # procent = self.words_dict.get(number).index(word) / len(self.words_dict.get(number)) * 100
+                if self.merge_find(word[1:], self.words_dict.get(min_index), len(self.words_dict.get(min_index))):
                     procent = self.liczba_slow / self.liczba_wszystkich_slow * 100
                     if procent != stary_procent:
                         print("Wykonano {:f} %".format(stary_procent))
@@ -89,6 +88,23 @@ class MagicJokeFromPolishLanguage:
             self.words_dict[len(word)].append(word)
         for val in self.words_dict.keys():
             self.liczba_wszystkich_slow+=len(self.words_dict.get(val))
+
+    def merge_find(self, looking, lista_words, index):
+        new_list = []
+        new_index = int(index/2)
+        if index <= 1:
+            if looking == lista_words[index-1]:
+                return True
+            return False
+        if looking == lista_words[new_index]:
+            return True
+        if looking < lista_words[new_index]:
+            new_list = lista_words[:new_index]
+            return self.merge_find(looking, new_list, new_index)
+        elif looking > lista_words[new_index]:
+            new_list = lista_words[new_index:]
+            return self.merge_find(looking, new_list, new_index)
+
 
 if __name__ == "__main__":
     mjfpl = MagicJokeFromPolishLanguage()

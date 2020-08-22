@@ -2,7 +2,7 @@ import pytest
 
 from app.app import MagicJokeFromPolishLanguage
 from collections import defaultdict
-from app.db import *
+
 class TestApp:
     mjfpl = MagicJokeFromPolishLanguage()
 
@@ -42,6 +42,8 @@ class TestApp:
 
     def test_generator_joke(self):
         self.mjfpl.words_dict = defaultdict(list)
+        self.mjfpl.liczba_slow = 100
+        self.mjfpl.liczba_wszystkich_slow = 100
         self.mjfpl.words_dict[5].append("abbami")
         self.mjfpl.words_dict[4].append("bbami")
         self.mjfpl.words_dict[5].append("abacie")
@@ -51,13 +53,15 @@ class TestApp:
         self.mjfpl.generate_jokes()
 
     def test_save_jokes(self):
-        self.mjfpl.jokes = """"Jak jest mucha bez ucha ? \n m \n\n! """
-        self.mjfpl.save_jokes()
+        self.mjfpl.save_jokes(""""Jak jest mucha bez ucha ? \n m \n\n! """)
 
-    def test_clean_up(self):
-        self.mjfpl.db = SessionLocal()
-        Base.metadata.create_all(bind=engine)
+    def test_merge_find(self):
         for litera in self.alfabet:
             self.mjfpl.all_words.append("a{}a".format(litera))
-        self.mjfpl.add_words_to_database()
-        self.mjfpl.generate_jokes()
+        assert self.mjfpl.merge_find(looking = "afa", lista_words = self.mjfpl.all_words, index = len(self.mjfpl.all_words)) == True
+
+    def test_merge_find_negative(self):
+        for litera in self.alfabet:
+            self.mjfpl.all_words.append("a{}a".format(litera))
+        assert self.mjfpl.merge_find(looking = "bbb", lista_words = self.mjfpl.all_words, index = len(self.mjfpl.all_words)) == False
+
