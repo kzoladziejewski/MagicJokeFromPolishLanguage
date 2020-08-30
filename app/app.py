@@ -59,20 +59,26 @@ class MagicJokeFromPolishLanguage:
     def generate_jokes(self):
         number_list = []
         stary_procent = 0
+        guard = 0
         for key, value in self.words_dict.items():
             number_list.append(key)
         number_list.sort(reverse=True)
         for number in number_list:
             min_index = number-1
-            if (min_index) not in number_list:
+            if (min_index) < 3:
                 break
             for word in self.words_dict.get(number):
                 self.liczba_slow+=1
-                if self.merge_find(word[1:], self.words_dict.get(min_index), len(self.words_dict.get(min_index))):
+                if self.merge_find(word[1:], self.words_dict.get(min_index)):
                     procent = int(self.liczba_slow / self.liczba_wszystkich_slow * 100)
                     if procent != stary_procent:
                         print("Wykonano {:f} %".format(stary_procent))
                         stary_procent = procent
+                        # if stary_procent == 2:
+                        #     raise Exception
+                    guard+=1
+                    if guard == 501:
+                        raise Exception
                     self.save_jokes(self.__generate_joke(word, word[1:]))
                     continue
 
@@ -80,7 +86,7 @@ class MagicJokeFromPolishLanguage:
         return "Jak jest {} bez {} ?\n{}!\n".format(first_word, second_word, first_word[0])
 
     def save_jokes(self, joke):
-        with open("joke.txt", 'a') as file:
+        with open("joke_merge.txt", 'a') as file:
             file.write(joke)
 
     def clean_up_word(self):
@@ -90,21 +96,25 @@ class MagicJokeFromPolishLanguage:
         for val in self.words_dict.keys():
             self.liczba_wszystkich_slow+=len(self.words_dict.get(val))
 
-    def merge_find(self, looking, lista_words, index):
-        new_list = []
-        new_index = int(index/2)
-        if index == 0:
-            if looking == lista_words[index]:
+    def merge_find(self, looking, lista_words):
+        index = len(lista_words)
+        new_index = int(index / 2)
+        if index % 2 == 1:
+           new_index = int(index/2) +1
+        if len(lista_words) == 1:
+            if looking in lista_words:
                 return True
             return False
-        # if looking == lista_words[index]:
-        #     return True
+        # if index == 0:
+        #     if looking == lista_words[index]:
+        #         return True
+        #     return False
         if looking < lista_words[new_index]:
             new_list = lista_words[:new_index]
-            return self.merge_find(looking, new_list, new_index)
+            return self.merge_find(looking, new_list)
         elif looking >= lista_words[new_index]:
             new_list = lista_words[new_index:]
-            return self.merge_find(looking, new_list, new_index)
+            return self.merge_find(looking, new_list)
 
 
 if __name__ == "__main__":
@@ -119,4 +129,3 @@ if __name__ == "__main__":
     print("Koniec czyszczenia slownika")
     mjfpl.generate_jokes()
     print("Wygenerowalo zarty, czas na zapis")
-    mjfpl.save_jokes()
