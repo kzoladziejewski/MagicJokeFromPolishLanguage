@@ -9,53 +9,19 @@ class MagicJokeFromPolishLanguage:
         self.all_words = []
         self.jokes = []
         self.words_dict = {}
-        # self.words_dict = defaultdict(list)
         self.liczba_slow = 0
         self.liczba_wszystkich_slow = 0
 
-    def compare_string(self, basic_string, cutet_string):
-        if basic_string[1:] == cutet_string:
-            return True
-        return False
-
-    def get_all_hrefs_from_page(self):
-        returned = requests.get(self.base_page).text
-        returned = returned.split("\n")
-        list_of_sub_url = []
-        for element in returned:
-                sub_url = self.__cut_url(element)
-                if sub_url:
-                    list_of_sub_url.append(sub_url)
-        return list_of_sub_url
-
-    def __cut_url(self, element):
-        if "\" href=" in element and "favicon.ico" not in element and "title" not in element:
-            sub_url = element[element.find("href=\""):element.find("class")]
-            sub_url = sub_url.replace("href=", "").replace("\"", "").replace(" ", "")
-            return sub_url
-
-    def get_all_subhrefs_from_page(self, list_of_suburl):
-        list_of_sub_url = []
-        for url in list_of_suburl:
-            print(self.base_url, url)
-            returned= requests.get("{}{}".format(self.base_url, url)).text
-            returned = returned.split("<td>")
-
-            for element in returned:
-                sub_url = self.__cut_url(element)
-                if sub_url:
-                    list_of_sub_url.append(sub_url)
-        return list_of_sub_url
-
-    def get_words(self, url_to_call):
-        print(self.base_url, url_to_call)
-        returned = requests.get("{}{}".format(self.base_url, url_to_call)).text
-        returned = returned.split("itemprop=\"itemListElement\"")
-
-        for element in returned:
-            if element.startswith(">") and "</span" in element:
-                word = element[:element.find("</span")][1:]
-                self.all_words.append(word)
+    def read_txt_with_words(self):
+        with open("odm.txt", 'r', encoding="utf-8") as file:
+            all_words = file.read().replace(", ","\n").split("\n")
+            for word in all_words:
+                try:
+                    new_word = word.replace(" ","")
+                    self.all_words.append(new_word)
+                    self.liczba_wszystkich_slow += 1
+                except UnicodeEncodeError:
+                    continue
 
     def generate_jokes(self):
         guard = 0
@@ -79,9 +45,8 @@ class MagicJokeFromPolishLanguage:
                     if slownik_danego_numeru:
                         if self.merge_find(word, slownik_danego_numeru.get(word[1])):
                             self.save_jokes(self.__generate_joke(word, word[1:]))
-                    guard +=1
-                    if guard == 501:
-                        raise Exception
+                            if guard == 501:
+                                raise Exception
 
 
     def __generate_joke(self, first_word, second_word):
@@ -94,8 +59,11 @@ class MagicJokeFromPolishLanguage:
     def clean_up_word(self):
         index_list = set()
         for word in self.all_words:
+            if len(word) == 0:
+                continue
             if not self.words_dict.get(len(word), None):
-                self.words_dict[len(word)] = {word[0] : [word]}
+                self.words_dict[len(word)] = {word[0]: [word]}
+
             elif not self.words_dict.get(len(word)).get(word[0], None):
                 self.words_dict[len(word)].update({word[0]: [word]})
             elif self.words_dict.get(len(word)).get(word[0]):
@@ -129,11 +97,8 @@ class MagicJokeFromPolishLanguage:
 
 if __name__ == "__main__":
     mjfpl = MagicJokeFromPolishLanguage()
-    url_list = mjfpl.get_all_hrefs_from_page()
-    url_sub_list = mjfpl.get_all_subhrefs_from_page(url_list)
-    for element in url_sub_list:
-        mjfpl.get_words(element)
-        print("Zbieranie slow, zebrano juz: {}".format(len(mjfpl.all_words)))
+    mjfpl.read_txt_with_words()
+
     print("Koniec zbierania slow. Zebrano {}".format(len(mjfpl.all_words)))
     mjfpl.clean_up_word()
     print("Koniec czyszczenia slownika")
