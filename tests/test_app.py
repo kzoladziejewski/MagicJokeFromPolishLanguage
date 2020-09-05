@@ -1,7 +1,7 @@
 import pytest
 
 from app.app import MagicJokeFromPolishLanguage
-
+from unittest.mock import patch
 
 @pytest.fixture(autouse=True)
 def mjfpl():
@@ -48,17 +48,24 @@ class TestApp(object):
         assert "abacie" in mjfpl.all_words
         assert "ażurze" in mjfpl.all_words
 
-    # def test_generator_joke(self):
-    #     # self.mjfpl.words_dict = defaultdict(list)
-    #     self.mjfpl.liczba_slow = 100
-    #     self.mjfpl.liczba_wszystkich_slow = 100
-    #     self.mjfpl.words_dict[5].append("abbami")
-    #     self.mjfpl.words_dict[4].append("bbami")
-    #     self.mjfpl.words_dict[5].append("abacie")
-    #     self.mjfpl.words_dict[4].append("bacie")
-    #     self.mjfpl.words_dict[5].append("ażurze")
-    #     self.mjfpl.words_dict[4].append("żurze")
-    #     self.mjfpl.generate_jokes()
+    def test_clean_up_words(self, mjfpl):
+        mjfpl.all_words = ["a","b","c","d","e","ab","bb","cb","db","eb", "abc","bbc","cbc","dbc","ebc",'ela','efa', 'eae']
+        mjfpl.clean_up_word()
+        assert mjfpl.liczba_wszystkich_slow == 15
+        assert mjfpl.words_dict[1] == {'a': ['a'], 'b': ['b'], 'c': ['c'], 'd': ['d'], 'e': ['e']}
+        assert mjfpl.words_dict[2] == {'a': ['ab'], 'b': ['bb'], 'c': ['cb'], 'd': ['db'], 'e': ['eb']}
+        assert mjfpl.words_dict[3] == {'a': ['abc'], 'b': ['bbc'], 'c': ['cbc'], 'd': ['dbc'], 'e': ['eae', 'ebc', 'efa', 'ela']}
+
+    def test_generator_joke(self, mjfpl):
+        mjfpl.words_dict = {
+            4 : {"a" : ["abia", "acad", "anal", "azja"],'u': ["ucha", "ucha", "unia"],'z': ["zeza", "zezy","zyzy"]},
+            5 : {'m': [ "mucha","mysza", "mąka","mżyt"], 'a': ['alicj', 'amina', 'azika']}
+        }
+        mjfpl.liczba_slow = 100
+        mjfpl.liczba_wszystkich_slow = 100
+        with patch.object(mjfpl, "save_jokes") as jokes:
+            mjfpl.generate_jokes()
+            jokes.assert_called_once()
 
     def test_save_jokes(self, mjfpl):
         mjfpl.save_jokes(""""Jak jest mucha bez ucha ? \n m \n\n! """)

@@ -8,7 +8,8 @@ class MagicJokeFromPolishLanguage:
         self.base_page = "https://polski-slownik.pl/wszystkie-slowa-jezyka-polskiego.php"
         self.all_words = []
         self.jokes = []
-        self.words_dict = defaultdict(list)
+        self.words_dict = {}
+        # self.words_dict = defaultdict(list)
         self.liczba_slow = 0
         self.liczba_wszystkich_slow = 0
 
@@ -57,30 +58,31 @@ class MagicJokeFromPolishLanguage:
                 self.all_words.append(word)
 
     def generate_jokes(self):
-        number_list = []
-        stary_procent = 0
         guard = 0
-        for key, value in self.words_dict.items():
-            number_list.append(key)
-        number_list.sort(reverse=True)
-        for number in number_list:
-            min_index = number-1
-            if (min_index) < 3:
+        stary_procent = 0
+        lista_numerow = []
+        for number in self.words_dict.keys():
+            lista_numerow.append(number)
+        lista_numerow.sort(reverse=True)
+        minimalny_index = lista_numerow[-1]
+
+        for numer in lista_numerow:
+            if numer == minimalny_index:
                 break
-            for word in self.words_dict.get(number):
-                self.liczba_slow+=1
-                if self.merge_find(word[1:], self.words_dict.get(min_index)):
+            for lista_slow in self.words_dict.get(numer).values():
+                for word in lista_slow:
                     procent = int(self.liczba_slow / self.liczba_wszystkich_slow * 100)
                     if procent != stary_procent:
                         print("Wykonano {:f} %".format(stary_procent))
                         stary_procent = procent
-                        # if stary_procent == 2:
-                        #     raise Exception
-                    guard+=1
+                    slownik_danego_numeru = self.words_dict.get(numer-1, None)
+                    if slownik_danego_numeru:
+                        if self.merge_find(word, slownik_danego_numeru.get(word[1])):
+                            self.save_jokes(self.__generate_joke(word, word[1:]))
+                    guard +=1
                     if guard == 501:
                         raise Exception
-                    self.save_jokes(self.__generate_joke(word, word[1:]))
-                    continue
+
 
     def __generate_joke(self, first_word, second_word):
         return "Jak jest {} bez {} ?\n{}!\n".format(first_word, second_word, first_word[0])
@@ -90,31 +92,39 @@ class MagicJokeFromPolishLanguage:
             file.write(joke)
 
     def clean_up_word(self):
+        index_list = set()
         for word in self.all_words:
-            word = word.replace("ą","a").replace("ć","c").replace("ę","e").replace("ł","l").replace("ń","n").replace("ó",'o').replace("ż",'z').replace("ś","s").replace("ź","z")
-            self.words_dict[len(word)].append(word)
+            if not self.words_dict.get(len(word), None):
+                self.words_dict[len(word)] = {word[0] : [word]}
+            elif not self.words_dict.get(len(word)).get(word[0], None):
+                self.words_dict[len(word)].update({word[0]: [word]})
+            elif self.words_dict.get(len(word)).get(word[0]):
+                self.words_dict[len(word)][word[0]].append(word)
+            index_list.add(len(word))
         for val in self.words_dict.keys():
             self.liczba_wszystkich_slow+=len(self.words_dict.get(val))
 
+        for element in index_list:
+            for key in self.words_dict[element]:
+                self.words_dict[element][key].sort()
+
     def merge_find(self, looking, lista_words):
-        index = len(lista_words)
-        new_index = int(index / 2)
-        if index % 2 == 1:
-           new_index = int(index/2) +1
-        if len(lista_words) == 1:
-            if looking in lista_words:
-                return True
-            return False
-        # if index == 0:
-        #     if looking == lista_words[index]:
-        #         return True
-        #     return False
-        if looking < lista_words[new_index]:
-            new_list = lista_words[:new_index]
-            return self.merge_find(looking, new_list)
-        elif looking >= lista_words[new_index]:
-            new_list = lista_words[new_index:]
-            return self.merge_find(looking, new_list)
+
+        if lista_words:
+            index = len(lista_words)
+            new_index = int(index / 2)
+            if index % 2 == 1:
+               new_index = int(index/2) +1
+            if len(lista_words) == 1:
+                if looking[1:] in lista_words:
+                    return True
+                return False
+            if looking < lista_words[new_index]:
+                new_list = lista_words[:new_index]
+                return self.merge_find(looking, new_list)
+            elif looking >= lista_words[new_index]:
+                new_list = lista_words[new_index:]
+                return self.merge_find(looking, new_list)
 
 
 if __name__ == "__main__":
