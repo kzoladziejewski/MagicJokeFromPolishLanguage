@@ -1,6 +1,3 @@
-import requests
-
-from collections import defaultdict
 class MagicJokeFromPolishLanguage:
 
     def __init__(self):
@@ -43,10 +40,11 @@ class MagicJokeFromPolishLanguage:
                         stary_procent = procent
                     slownik_danego_numeru = self.words_dict.get(numer-1, None)
                     if slownik_danego_numeru:
-                        if self.merge_find(word, slownik_danego_numeru.get(word[1])):
-                            self.save_jokes(self.__generate_joke(word, word[1:]))
-                            if guard == 501:
-                                raise Exception
+                        if slownik_danego_numeru.get(word[0], None):
+                            if self.merge_find(word, slownik_danego_numeru.get(word[0])):
+                                self.save_jokes(self.__generate_joke(word, word[0:]))
+                                if guard == 501:
+                                    raise Exception
 
 
     def __generate_joke(self, first_word, second_word):
