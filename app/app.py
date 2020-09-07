@@ -33,6 +33,7 @@ class MagicJokeFromPolishLanguage:
                 break
             for lista_slow in self.words_dict.get(numer).values():
                 for word in lista_slow:
+                    self.liczba_slow +=1
                     procent = int(self.liczba_slow / self.liczba_wszystkich_slow * 100)
                     if procent != stary_procent:
                         print("Wykonano {:f} %".format(stary_procent))
@@ -40,7 +41,7 @@ class MagicJokeFromPolishLanguage:
                     slownik_danego_numeru = self.words_dict.get(numer-1, None)
                     if slownik_danego_numeru:
                         if slownik_danego_numeru.get(word[1], None):
-                            if self.merge_find(word, slownik_danego_numeru.get(word[0])):
+                            if self.merge_find(word, slownik_danego_numeru.get(word[1])):
                                 self.save_jokes(self.__generate_joke(word, word[0:]))
 
     def __generate_joke(self, first_word, second_word):
@@ -69,6 +70,14 @@ class MagicJokeFromPolishLanguage:
         for element in index_list:
             for key in self.words_dict[element]:
                 self.words_dict[element][key].sort()
+        #
+        # with open("file_output.txt", "a") as file:
+        #     for element in index_list:
+        #         for key in self.words_dict[element]:
+        #             try:
+        #                 file.write(str(self.words_dict[element][key]))
+        #             except UnicodeEncodeError:
+        #                 pass
 
     def merge_find(self, looking, lista_words):
 
