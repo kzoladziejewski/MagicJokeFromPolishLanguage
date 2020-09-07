@@ -70,14 +70,6 @@ class MagicJokeFromPolishLanguage:
         for element in index_list:
             for key in self.words_dict[element]:
                 self.words_dict[element][key].sort()
-        #
-        # with open("file_output.txt", "a") as file:
-        #     for element in index_list:
-        #         for key in self.words_dict[element]:
-        #             try:
-        #                 file.write(str(self.words_dict[element][key]))
-        #             except UnicodeEncodeError:
-        #                 pass
 
     def merge_find(self, looking, lista_words):
 
@@ -105,5 +97,6 @@ if __name__ == "__main__":
     print("Koniec zbierania slow. Zebrano {}".format(len(mjfpl.all_words)))
     mjfpl.clean_up_word()
     print("Koniec czyszczenia slownika")
+    mjfpl.all_words = []
     mjfpl.generate_jokes()
     print("Wygenerowalo zarty, czas na zapis")
