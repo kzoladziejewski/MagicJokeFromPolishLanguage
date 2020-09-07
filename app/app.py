@@ -21,7 +21,6 @@ class MagicJokeFromPolishLanguage:
                     continue
 
     def generate_jokes(self):
-        guard = 0
         stary_procent = 0
         lista_numerow = []
         for number in self.words_dict.keys():
@@ -40,12 +39,9 @@ class MagicJokeFromPolishLanguage:
                         stary_procent = procent
                     slownik_danego_numeru = self.words_dict.get(numer-1, None)
                     if slownik_danego_numeru:
-                        if slownik_danego_numeru.get(word[0], None):
+                        if slownik_danego_numeru.get(word[1], None):
                             if self.merge_find(word, slownik_danego_numeru.get(word[0])):
                                 self.save_jokes(self.__generate_joke(word, word[0:]))
-                                if guard == 501:
-                                    raise Exception
-
 
     def __generate_joke(self, first_word, second_word):
         return "Jak jest {} bez {} ?\n{}!\n".format(first_word, second_word, first_word[0])
