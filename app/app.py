@@ -52,7 +52,8 @@ class MagicJokeFromPolishLanguage:
 
     def clean_up_word(self):
         index_list = set()
-        for word in self.all_words:
+        for word_1 in self.all_words:
+            word = word_1.lower()
             if len(word) == 0:
                 continue
             if not self.words_dict.get(len(word), None):
@@ -65,7 +66,6 @@ class MagicJokeFromPolishLanguage:
             index_list.add(len(word))
         for val in self.words_dict.keys():
             self.liczba_wszystkich_slow+=len(self.words_dict.get(val))
-
         for element in index_list:
             for key in self.words_dict[element]:
                 self.words_dict[element][key].sort()
