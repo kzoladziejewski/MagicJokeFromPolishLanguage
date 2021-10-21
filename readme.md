@@ -1,5 +1,8 @@
-Jak jest mucha bez ucha?
+##Jak jest mucha bez ucha?
 
--m!
+##-m!
 
-How fun xDDD
+###How fun xDDD
+
+#Before run:
+###### - Provide in console: chcp 65001
