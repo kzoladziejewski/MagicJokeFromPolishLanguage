@@ -26,4 +26,5 @@ class StatisticModel(db.Model):
         db.session.delete(self)
         db.session.commit()
         
-    
+    def get_id_joke_static(cls, _id):
+        return cls.filter_by(id_joke=_id).first()
