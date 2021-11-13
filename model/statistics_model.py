@@ -2,7 +2,7 @@ from db import db
 
 class StatisticModel(db.Model):
     
-    __tablename__ = "statustics"
+    __tablename__ = "statistics"
     _id = db.Column(db.Integer, primary_key=True)
     id_joke = db.Column(db.Integer)
     rate = db.Column(db.Integer)
@@ -25,6 +25,7 @@ class StatisticModel(db.Model):
     def delete_to_db(self):
         db.session.delete(self)
         db.session.commit()
-        
+
+    @classmethod
     def get_id_joke_static(cls, _id):
-        return cls.filter_by(id_joke=_id).first()
+        return cls.query.filter_by(id_joke=_id).first()
