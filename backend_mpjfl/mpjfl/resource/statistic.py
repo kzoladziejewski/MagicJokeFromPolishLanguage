@@ -1,6 +1,5 @@
-from model.statistics_model import StatisticModel
+from mpjfl.model.statistics_model import StatisticModel
 from flask_restful import Resource, reqparse
-from model.jokes_model import JokeModel
 from http import HTTPStatus
 from flask_cors import cross_origin
 

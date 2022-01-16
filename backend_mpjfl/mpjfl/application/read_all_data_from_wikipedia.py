@@ -18,8 +18,10 @@ Idz na nastepna strone
 import requests
 from bs4 import BeautifulSoup
 from time import sleep
-from model.words_model import WordsModel
-from model.done_link import DoneLink
+
+# from mpflj.model. import WordModel
+
+from mpjfl.model.words_model import WordsModel
 
 class FindAllWords:
 

@@ -1,12 +1,20 @@
 from flask import Flask
 from flask_restful import Api
 
-from db import db
-from app.read_all_data_from_wikipedia import FindAllWords
-from resource.create_jokes import CreateJokeResource
-from resource.jokes import JokeResource
-from resource.statistic import StatisticResource
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
+
+try:
+    from backend_mpjfl.mpjfl.db import db
+    from backend_mpjfl.mpjfl.app import FindAllWords
+    from backend_mpjfl.mpjfl.resource.create_jokes import CreateJokeResource
+    from backend_mpjfl.mpjfl.resource.jokes import JokeResource
+    from backend_mpjfl.mpjfl.resource.statistic import StatisticResource
+except ImportError:
+    from db import db
+    from application.read_all_data_from_wikipedia import FindAllWords
+    from resource.create_jokes import CreateJokeResource
+    from resource.jokes import JokeResource
+    from resource.statistic import StatisticResource
 
 app = Flask(__name__)
 CORS(app)

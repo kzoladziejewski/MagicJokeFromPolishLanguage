@@ -1,7 +1,7 @@
 from flask_restful import Resource
-from model.jokes_model import JokeModel
-from model.words_model import WordsModel
 
+from mpjfl.model.jokes_model import JokeModel
+from mpjfl.model.words_model import WordsModel
 class CreateJokeResource(Resource):
 
     def get(self):
