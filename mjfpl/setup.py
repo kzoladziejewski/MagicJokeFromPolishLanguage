@@ -11,7 +11,7 @@ with open(os.path.join('.', 'VERSION')) as f:
 sys.path.remove('.')
 
 setuptools.setup(
-    name="MagicJokeFromPolishLanguage",
+    name="mjfpl",
     version=version,
     author="Kacper Zoladziejewski PyKasztan",
     author_email="kzoladziejewski@gmail..com",

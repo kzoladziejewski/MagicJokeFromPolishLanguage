@@ -1,12 +1,13 @@
 from flask_restful import Resource
 
-from mpjfl.model.jokes_model import JokeModel
-from mpjfl.model.words_model import WordsModel
+from mjfpl.model.jokes_model import JokeModel
+from mjfpl.model.words_model import WordsModel
+
+
 class CreateJokeResource(Resource):
 
     def get(self):
         words = WordsModel.find_all_word()
-        # core = f"Jak jest {} bez {}"
 
         for word in words:
             noun = word.json().get("nouns")

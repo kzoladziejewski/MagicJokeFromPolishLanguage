@@ -1,6 +1,7 @@
-from mpjfl.db import db
+from mjfpl.db import db
 
 class JokeModel(db.Model):
+
     __tablename__ = "jokes"
     _id = db.Column(db.Integer, primary_key=True)
     joke_question = db.Column(db.String(160))
@@ -28,3 +29,7 @@ class JokeModel(db.Model):
     @classmethod
     def find_skip_repeated_joke(cls, joke):
         return cls.query.filter_by(joke_question=joke).first()
+
+    @classmethod
+    def get_first_joke(cls):
+        return cls.query.filter_by(_id=1).first()

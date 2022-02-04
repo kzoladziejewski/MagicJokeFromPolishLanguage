@@ -1,6 +1,8 @@
-from mpjfl.model.statistics_model import StatisticModel
-from flask_restful import Resource, reqparse
+from mjfpl.model.statistics_model import StatisticModel
+
 from http import HTTPStatus
+
+from flask_restful import Resource, reqparse
 from flask_cors import cross_origin
 
 class StatisticResource(Resource):

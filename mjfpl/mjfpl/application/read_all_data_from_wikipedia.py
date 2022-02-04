@@ -7,11 +7,6 @@ And save to database:
 """
 
 """
-Wejdz na strone 
-Sparsuj ja
-Pobierz wszystkie linki do slowek i do nastepnej strony
-while: 
-Idz na nastepna strone
 
 """
 
@@ -19,9 +14,7 @@ import requests
 from bs4 import BeautifulSoup
 from time import sleep
 
-# from mpflj.model. import WordModel
-
-from mpjfl.model.words_model import WordsModel
+from mjfpl.model.words_model import WordsModel
 
 class FindAllWords:
 
@@ -32,18 +25,15 @@ class FindAllWords:
         self.links = [self.url]
         self.word_mapping = {}
 
-    def get_all_next_page(self, tried ):
+    def get_all_next_page(self):
         """
         Method for get all page under hyperlink "nastepna strona"
         :return:
         """
-        tried+=1
-        print(tried)
         for tries in range(0,10):
             try:
                 content = requests.get(self.url)
             except Exception as error:
-                print("get_all_next_page", tries, error)
                 sleep(60)
             else:
                 break
@@ -56,7 +46,7 @@ class FindAllWords:
                 if new_url not in self.links:
                     self.links.append(new_url)
                     self.url = new_url
-                    return self.get_all_next_page(tried)
+                    # return self.get_all_next_page()
                 else:
                     return False
         return False
@@ -67,12 +57,10 @@ class FindAllWords:
         :return:
         """
         for each_link_to_next_page in self.links:
-            print(each_link_to_next_page)
             for tries in range(0, 3):
                 try:
                     content = requests.get(each_link_to_next_page)
                 except Exception as error:
-                    print("get_all_hyperlink_to_details_of_nouns", tries, error)
                     sleep(60)
                 else:
                     break
@@ -83,27 +71,6 @@ class FindAllWords:
                 if liv.get("href") and "https" not in liv.get("href") and ":" not in liv.get("href"):
                     if len(liv.text.split(" ")) == 1:
                         self.word_mapping[liv.text] = liv.get("href")
-
-    # def get_nouns(self, url):
-    #     for tries in range(0,3):
-    #         try:
-    #             content = requests.get(url)
-    #         except Exception as error:
-    #             print(tries, error)
-    #             sleep(600)
-    #         else:
-    #             break
-    #     text_to_soup = content.text
-    #     soup = BeautifulSoup(text_to_soup, features="html.parser")
-    #     livs = soup.find_all('a')
-    #     for liv in livs:
-    #         if liv.get("href") and "https" not in liv.get("href") and ":" not in liv.get("href"):
-    #             if len(liv.text.split(" ")) == 1:
-    #                 self.word_mapping[liv.text] = liv.get("href")
-    #         elif "następna strona" in liv.text:
-    #             new_url = self.url_to_regex + liv.get("href")
-    #             if new_url not in self.links:
-    #                 self.links.append(new_url)
 
 
     def get_all_nouns_from_link(self):
@@ -119,9 +86,7 @@ class FindAllWords:
             except IndexError:
                 break
             guard+=1
-            print(self.links[-1])
             self.links.remove(self.links[0])
-            print(f"Done: {int(guard/309*100)}%")
             if guard/309*100 > 101:
                 break
 
@@ -134,13 +99,12 @@ class FindAllWords:
         https://pl.wiktionary.org/wiki/abroseksualizm#pl
         """
         for word, link in self.word_mapping.items():
+            print(word, link)
             url = f"https://pl.wiktionary.org/{link}"
             for tries in range(0,3):
-                print(f"{tries} for {link}")
                 try:
                     content = requests.get(url)
                 except Exception:
-                    print(f"Can not download link: {url}")
                     sleep(600) #wait 10 minut
                 else:
                     break
@@ -163,7 +127,7 @@ class FindAllWords:
                     if dopelniacz_list:
                         dopelniacz_list.append(dopelniacz_list[-1])
                     else:
-                        print(word, " : ",mianownik_list, "NOT dopelniacz!")
+                        continue
                 else:
                     for _ in range(0, len(mianownik_list)):
                         wm = WordsModel(mianownik_list[_],link, dopelniacz_list[_], len(mianownik_list[0]))

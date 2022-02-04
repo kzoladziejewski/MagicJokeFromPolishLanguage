@@ -1,4 +1,4 @@
-from mpjfl.db import db
+from db import db
 
 class DoneLink(db.Model):
 
