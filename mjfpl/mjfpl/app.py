@@ -12,8 +12,11 @@ from mjfpl.application.read_all_data_from_wikipedia import FindAllWords
 from mjfpl.model.done_link import DoneLink
 
 import logging
+import datetime
 
-logging.basicConfig(filename = 'app_logs.log', level=logging.DEBUG, format = f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
+logging.basicConfig(filename = f'flask_log_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.log', level=logging.INFO, format = f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
+logging.getLogger().addHandler(logging.StreamHandler())
+
 app = Flask(__name__)
 CORS(app)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mjfpl.db'
