@@ -1,7 +1,6 @@
-from mjfpl.db import db
+from db import db
 
 class JokeModel(db.Model):
-
     __tablename__ = "jokes"
     _id = db.Column(db.Integer, primary_key=True)
     joke_question = db.Column(db.String(160))

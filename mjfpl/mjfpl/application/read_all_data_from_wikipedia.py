@@ -6,13 +6,12 @@ https://pl.wiktionary.org/wiki/Kategoria:J%C4%99zyk_polski_-_rzeczowniki
 And save to database:
 """
 
-"""
-
-"""
-
 import requests
-from bs4 import BeautifulSoup
+import logging
+
 from time import sleep
+
+from bs4 import BeautifulSoup
 
 from mjfpl.model.words_model import WordsModel
 
@@ -34,6 +33,7 @@ class FindAllWords:
             try:
                 content = requests.get(self.url)
             except Exception as error:
+                logging.error(error)
                 sleep(60)
             else:
                 break
@@ -61,6 +61,7 @@ class FindAllWords:
                 try:
                     content = requests.get(each_link_to_next_page)
                 except Exception as error:
+                    logging.error(error)
                     sleep(60)
                 else:
                     break
@@ -80,11 +81,12 @@ class FindAllWords:
         """
         guard = 0
         while self.go:
+            logging.info(guard/309*100)
             try:
                 looked_url = self.links[0]
                 self.get_nouns(looked_url)
-            except IndexError:
-                break
+            except IndexError as ieerror:
+                logging.error(ieerror)
             guard+=1
             self.links.remove(self.links[0])
             if guard/309*100 > 101:
@@ -99,12 +101,13 @@ class FindAllWords:
         https://pl.wiktionary.org/wiki/abroseksualizm#pl
         """
         for word, link in self.word_mapping.items():
-            print(word, link)
+            logging.info(f"Add {work} to {link}")
             url = f"https://pl.wiktionary.org/{link}"
             for tries in range(0,3):
                 try:
                     content = requests.get(url)
-                except Exception:
+                except Exception as error:
+                    logging.error(error)
                     sleep(600) #wait 10 minut
                 else:
                     break
@@ -136,4 +139,3 @@ class FindAllWords:
 if __name__ == "__main__":
     faw = FindAllWords()
     a = faw.get_all_nouns_from_link()
-

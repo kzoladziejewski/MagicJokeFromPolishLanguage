@@ -1,7 +1,6 @@
 from db import db
 
 class DoneLink(db.Model):
-
     __tablename__ = "done_link"
     _id = db.Column(db.Integer, primary_key=True)
     done_link = db.Column(db.String(160))

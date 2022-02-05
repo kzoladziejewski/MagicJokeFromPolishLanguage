@@ -1,7 +1,6 @@
 from db import db
 
 class StatisticModel(db.Model):
-    
     __tablename__ = "statistics"
     _id = db.Column(db.Integer, primary_key=True)
     id_joke = db.Column(db.Integer)
