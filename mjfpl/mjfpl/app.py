@@ -30,7 +30,6 @@ api.add_resource(StatisticResource, "/static")
 api.add_resource(HelloWorld, "/")
 
 def find_word():
-    app.logger.info("Test test")
     faw = FindAllWords()
     faw.get_all_next_page()
     faw.get_all_hyperlink_to_details_of_nouns()
