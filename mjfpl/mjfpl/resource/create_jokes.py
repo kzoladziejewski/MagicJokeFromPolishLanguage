@@ -3,7 +3,7 @@ from flask_restful import Resource
 from mjfpl.model.jokes_model import JokeModel
 from mjfpl.model.words_model import WordsModel
 
-
+from http import HTTPStatus
 class CreateJokeResource(Resource):
 
     def get(self):
@@ -21,3 +21,4 @@ class CreateJokeResource(Resource):
                     if not find_joke:
                         jok = JokeModel(joke_question = joke, joke_answer=noun[:1])
                         jok.save_to_db()
+        return {HTTPStatus.OK, {"msg" : {"Jokes created"}}}

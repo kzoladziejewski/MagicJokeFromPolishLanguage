@@ -13,7 +13,7 @@ from time import sleep
 
 from bs4 import BeautifulSoup
 
-# from mjfpl.model.words_model import WordsModel
+from mjfpl.model.words_model import WordsModel
 
 
 class FindAllWords:
@@ -47,6 +47,7 @@ class FindAllWords:
                 if new_url not in self.links:
                     self.links.append(new_url)
                     self.url = new_url
+                    print(new_url)
                     logging.debug(f"Go to next page {new_url}")
                     return self.get_all_next_page()
                 else:
