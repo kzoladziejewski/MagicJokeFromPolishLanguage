@@ -40,7 +40,7 @@ def create_tables():
     db.create_all()
     db.session.commit()
 
-    find_word()
+    # find_word()
     # if not jk:
 
 if __name__ == "__main__":
