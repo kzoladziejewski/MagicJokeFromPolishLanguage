@@ -1,4 +1,4 @@
-from db import db
+from mjfpl.mjfpl.db import db
 
 class WordsModel(db.Model):
     __tablename__ = "words"
