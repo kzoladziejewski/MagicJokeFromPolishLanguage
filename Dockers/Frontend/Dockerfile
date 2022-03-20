@@ -1,11 +1,12 @@
+ECHO $PWD
 FROM node:alpine3.11
 
 RUN mkdir -p /app
 WORKDIR /app
 
-COPY ../../../frontend/package*.json ./
+COPY ../../frontend/package*.json ./
 RUN npm install
-COPY frontend/ .
+COPY ../../frontend/ .
 RUN npm install
 RUN npm run build
 

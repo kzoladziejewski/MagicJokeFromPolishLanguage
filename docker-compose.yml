@@ -1,0 +1,12 @@
+services:
+  frontend:
+    working_dir : 
+    build: Dockers/Frontend/.
+    ports:
+      - "3000:3000"
+
+  backend:
+    build: Dockers/Backen_mpjfl/.
+    ports:
+      - "8080:8080"
+

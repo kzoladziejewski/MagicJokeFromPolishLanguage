@@ -30,4 +30,4 @@ class StatisticResource(Resource):
         rate = int(static.json().get("rate"))
         static.rate = rate + rate_joke
         static.save_to_db()
-        return {HTTPStatus.OK, {"msg" : {"Rate updated"}}}
+        return {"msg" : "Rate updated"}, HTTPStatus.OK

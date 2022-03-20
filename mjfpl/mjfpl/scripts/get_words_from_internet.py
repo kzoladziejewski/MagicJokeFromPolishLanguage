@@ -142,5 +142,4 @@ class FindAllWords:
 
 if __name__ == "__main__":
     faw = FindAllWords()
-    # a = faw.get_all_nouns_from_link()
     faw.get_all_next_page()
