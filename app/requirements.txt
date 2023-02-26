@@ -1,0 +1,14 @@
+#packages for development
+pytest
+flake8
+mypy
+bandit
+
+#package for app
+requests
+SQLAlchemy
+flask_sqlalchemy
+BeautifulSoup4
+flask-cors
+flask_restful
+Werkzeug
