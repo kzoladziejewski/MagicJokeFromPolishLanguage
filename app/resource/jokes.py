@@ -15,6 +15,3 @@ class JokeResource(Resource):
         jokes = JokeModel.find_all_jokes()
         return_joke = choice(jokes)
         return return_joke.json()
-
-
-

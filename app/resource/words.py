@@ -15,6 +15,8 @@ class WordResource(Resource):
     parser.add_argument("len_word",type=str,required=True)
     
     def get(self):
+        words_list = {}
+        # for _ in 
         return {'msg': WordsModel.find_all_word()}, HTTPStatus.OK
     
     def post(self):

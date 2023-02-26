@@ -119,24 +119,9 @@ class MagicJokeFromPolishLanguage:
                         add_word = requests.post(url='http://127.0.0.1:8080/word',data=data)
                         logging.info(f'Word is send to localhost with {add_word.status_code}')
 
-    def create_jokes(self):
-        words = requests.get(url='http://127.0.0.1:8080/word')
-        print(words.text)
-        for word in words:
-            noun = word.json().get("nouns")
-            if len(noun) > 1:
-                for element in range(1, len(noun)):
-                    gen_first = WordsModel.find_genitive(noun[element:])
-                    if gen_first:
-                        gen = gen_first.json().get("genitive")
-                        joke =  f"Jak jest {noun} bez {gen}"
-                        data = {'joke' : joke, 'answer': noun[0]}
-                        add_joke = requests.post('http://127.0.0.1:8080/joke_admin', data=data)
-                        logging.info(f'Post for add joke is finished with {add_joke.status_code}')
 
 if __name__ == "__main__":
     mjfpl = MagicJokeFromPolishLanguage()
-    # mjfpl.get_all_next_page()
-    # mjfpl.get_all_hyperlink_to_details_of_nouns()
-    # mjfpl.add_nouns_to_database()
-    mjfpl.create_jokes()
+    mjfpl.get_all_next_page()
+    mjfpl.get_all_hyperlink_to_details_of_nouns()
+    mjfpl.add_nouns_to_database()
