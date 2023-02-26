@@ -2,9 +2,10 @@ from http import HTTPStatus
 
 from flask_restful import Resource, reqparse
 from flask_cors import cross_origin
-
-from model import CommentsModel
-
+try:
+    from model import CommentsModel
+except:
+    from app.model import CommentsModel
 
 class CommentsResource(Resource):
 

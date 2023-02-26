@@ -3,7 +3,7 @@ import pytest
 from unittest.mock import patch
 from unittest.mock import MagicMock
 
-from .mjfpl.application.read_all_data_from_wikipedia import FindAllWords
+from mjfpl.mjfpl_app import MagicJokeFromPolishLanguage
 
 import requests
 import pathlib
@@ -14,9 +14,9 @@ class TestChangePage:
         """
         Test case to check if is possible to click next on webpage to change website
         """
-        faw = FindAllWords()
+        faw = MagicJokeFromPolishLanguage()
         returned_object = MagicMock()
-        html_file = pathlib.Path().cwd().joinpath("test_data").joinpath("Page-start.htm")
+        html_file = pathlib.Path(__file__).parent.joinpath("test_data").joinpath("Page-start.htm")
 
         returned_object.text = open(html_file, 'r', encoding="utf-8").read()
         with patch.object(requests, "get") as mocked_request:
@@ -28,9 +28,9 @@ class TestChangePage:
         """
         Test case to check if is possible to get next webpage and url
         """
-        faw = FindAllWords()
+        faw = MagicJokeFromPolishLanguage()
         returned_object = MagicMock()
-        html_file = pathlib.Path().cwd().joinpath("test_data").joinpath("Page-start.htm")
+        html_file = pathlib.Path(__file__).parent.joinpath("test_data").joinpath("Page-start.htm")
 
         returned_object.text = open(html_file, 'r', encoding="utf-8").read()
         with patch.object(requests, "get") as mocked_request:

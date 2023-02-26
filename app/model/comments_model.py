@@ -1,4 +1,7 @@
-from db import db
+try:
+    from db import db
+except:
+    from app.db import db
 
 class CommentsModel(db.Model):
     __tablename__ = "comments"

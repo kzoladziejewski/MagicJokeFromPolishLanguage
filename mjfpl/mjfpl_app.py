@@ -4,7 +4,7 @@ Class for download all nouns from this webpage:
 https://pl.wiktionary.org/wiki/Kategoria:J%C4%99zyk_polski_-_rzeczowniki
 And save to database.
 """
-
+import datetime
 import requests
 import logging
 
@@ -14,6 +14,12 @@ from bs4 import BeautifulSoup
 
 from app.model.words_model import WordsModel
 from app.model.jokes_model import JokeModel
+from flask_sqlalchemy import SQLAlchemy
+
+logging.basicConfig(filename=f'crawler_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.log',
+                    level=logging.INFO,
+                    format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
+logging.getLogger().addHandler(logging.StreamHandler())
 
 class MagicJokeFromPolishLanguage:
 
@@ -24,19 +30,23 @@ class MagicJokeFromPolishLanguage:
         self.links = [self.url]
         self.word_mapping = {}
 
-    def get_all_next_page(self):
-        """
-        Method for get all page under hyperlink "nastepna strona"
-        :return:
-        """
-        for tries in range(0, 10):
+    def __get_content_from_url(self, url, tries=10, timeout=60):
+        for nr_try in range(0,tries):
             try:
-                content = requests.get(self.url)
+                content = requests.get(url)
+                return content
             except Exception as error:
                 logging.error(error)
-                sleep(60)
-            else:
-                break
+                sleep(timeout)
+
+    def get_all_next_page(self, elo = 0):
+        """
+        Method for get all pages under hyperlink "nastepna strona" on webpage
+        :return:
+        """
+        if elo == 2:
+            return False
+        content = self.__get_content_from_url(self.url, 10, 60)
         text_to_soup = content.text
         soup = BeautifulSoup(text_to_soup, features="html.parser")
         livs = soup.find_all('a')
@@ -45,27 +55,22 @@ class MagicJokeFromPolishLanguage:
                 new_url = self.url_to_regex + liv.get("href")
                 if new_url not in self.links:
                     self.links.append(new_url)
+                    logging.debug(f'Added new url link {new_url} to links')
                     self.url = new_url
                     logging.debug(f"Go to next page {new_url}")
-                    return self.get_all_next_page()
+                    return self.get_all_next_page(2)
                 else:
-                    return False
+                    logging.debug(f"Achieved last webpage {self.links[-1]}")
+                    return True
         return False
 
     def get_all_hyperlink_to_details_of_nouns(self):
         """
-        Method to get all data about nouns onwebpage
+        Method to get all data about nouns on webpage
         :return:
         """
         for each_link_to_next_page in self.links:
-            for tries in range(0, 3):
-                try:
-                    content = requests.get(each_link_to_next_page)
-                except Exception as error:
-                    logging.error(error)
-                    sleep(60)
-                else:
-                    break
+            content = self.__get_content_from_url(each_link_to_next_page, 3, 60)
             text_to_soup = content.text
             soup = BeautifulSoup(text_to_soup, features="html.parser")
             livs = soup.find_all('a')
@@ -73,27 +78,6 @@ class MagicJokeFromPolishLanguage:
                 if liv.get("href") and "https" not in liv.get("href") and ":" not in liv.get("href"):
                     if len(liv.text.split(" ")) == 1:
                         self.word_mapping[liv.text] = liv.get("href")
-
-    def get_all_nouns_from_link(self):
-        """
-        Method to get all nouns from links
-        :return:
-        """
-        guard = 0
-        while self.go:
-            logging.info(guard / 309 * 100)
-            try:
-                looked_url = self.links[0]
-                self.get_nouns(looked_url)
-            except IndexError as ieerror:
-                logging.error(ieerror)
-            guard += 1
-            self.links.remove(self.links[0])
-            if guard / 309 * 100 > 101:
-                break
-
-        self.add_nouns_to_database()
-        sleep(1)
 
     def add_nouns_to_database(self):
         """
@@ -103,14 +87,7 @@ class MagicJokeFromPolishLanguage:
         for word, link in self.word_mapping.items():
             logging.info(f"Add {word} to {link}")
             url = f"https://pl.wiktionary.org/{link}"
-            for tries in range(0, 3):
-                try:
-                    content = requests.get(url)
-                except Exception as error:
-                    logging.error(error)
-                    sleep(600)  # wait 10 minut
-                else:
-                    break
+            content = self.__get_content_from_url(url, 3, 600)
             # text_to_soup = content.text.encode('utf-8').decode('ascii', 'ignore')
             text_to_soup = content.text
             soup = BeautifulSoup(text_to_soup, features="html.parser")
@@ -123,7 +100,6 @@ class MagicJokeFromPolishLanguage:
                 mianownik_index = words_list.index("mianownik")
                 dopelniacz_index = words_list.index("dopełniacz")
                 celownik_index = words_list.index("celownik")
-
                 mianownik_list = words_list[mianownik_index:dopelniacz_index][1:]
                 dopelniacz_list = words_list[dopelniacz_index:celownik_index][1:]
                 if len(words_list[mianownik_index:dopelniacz_index]) != len(
@@ -134,12 +110,18 @@ class MagicJokeFromPolishLanguage:
                         continue
                 else:
                     for _ in range(0, len(mianownik_list)):
-                        wm = WordsModel(mianownik_list[_], link, dopelniacz_list[_], len(mianownik_list[0]))
-                        wm.save_to_db()
+                        data = {
+                            "nouns": mianownik_list[_],
+                            "url": link,
+                            "genitive": dopelniacz_list[_],
+                            "len_word": len(mianownik_list[0])
+                        }
+                        add_word = requests.post(url='http://127.0.0.1:8080/word',data=data)
+                        logging.info(f'Word is send to localhost with {add_word.status_code}')
 
     def create_jokes(self):
-        words = WordsModel.find_all_word()
-
+        words = requests.get(url='http://127.0.0.1:8080/word')
+        print(words.text)
         for word in words:
             noun = word.json().get("nouns")
             if len(noun) > 1:
@@ -148,12 +130,13 @@ class MagicJokeFromPolishLanguage:
                     if gen_first:
                         gen = gen_first.json().get("genitive")
                         joke =  f"Jak jest {noun} bez {gen}"
-                        find_joke = JokeModel.find_skip_repeated_joke(joke)
-                        if not find_joke:
-                            jok = JokeModel(joke_question = joke, joke_answer=noun[:1])
-                            jok.save_to_db()
+                        data = {'joke' : joke, 'answer': noun[0]}
+                        add_joke = requests.post('http://127.0.0.1:8080/joke_admin', data=data)
+                        logging.info(f'Post for add joke is finished with {add_joke.status_code}')
 
 if __name__ == "__main__":
     mjfpl = MagicJokeFromPolishLanguage()
-    mjfpl.get_all_next_page()
+    # mjfpl.get_all_next_page()
+    # mjfpl.get_all_hyperlink_to_details_of_nouns()
+    # mjfpl.add_nouns_to_database()
     mjfpl.create_jokes()

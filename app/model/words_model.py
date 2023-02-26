@@ -1,4 +1,7 @@
-from db import db
+try:
+    from db import db
+except:
+    from app.db import db
 
 class WordsModel(db.Model):
     __tablename__ = "words"
@@ -21,7 +24,6 @@ class WordsModel(db.Model):
             "nouns": self.nouns,
             "genitive": self.genitive,
             "len_word": self.len_word,
-            'rate': self.rate
         }
     
     def save_to_db(self):
@@ -40,3 +42,6 @@ class WordsModel(db.Model):
     def find_genitive(cls, word):
         return cls.query.filter_by(genitive=word).first()
 
+    @classmethod
+    def find_nouns(cls, word):
+        return cls.query.filter_by(nouns=word).first()

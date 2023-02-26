@@ -8,6 +8,9 @@ import logging
 import datetime
 
 from resource.jokes import JokeResource
+from resource.words import WordResource
+from resource.joke_private_session import JokePrivateSession
+
 from pathlib import Path
 database_path = Path(__file__).parent.parent.joinpath('mjfpl.db')
 logging.basicConfig(filename=f'flask_log_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.log',
@@ -23,6 +26,8 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 api = Api(app)
 
 api.add_resource(JokeResource, "/joke")
+api.add_resource(WordResource, '/word')
+api.add_resource(JokePrivateSession, "/joke_admin")
 
 
 @app.before_first_request
