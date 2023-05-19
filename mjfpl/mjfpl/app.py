@@ -14,7 +14,7 @@ from mjfpl.model.done_link import DoneLink
 import logging
 import datetime
 
-logging.basicConfig(filename = f'flask_log_{datetime.datetime.now().strftime("%Y%m%d%H%M%S")}.log', level=logging.INFO, format = f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
+logging.basicConfig(filename = f'flask_log_{datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")}.log', level=logging.INFO, format = f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 logging.getLogger().addHandler(logging.StreamHandler())
 
 app = Flask(__name__)
@@ -35,18 +35,10 @@ def find_word():
     faw.get_all_hyperlink_to_details_of_nouns()
     faw.add_nouns_to_database()
 
-@app.before_first_request
-def create_tables():
-    db.create_all()
-    db.session.commit()
-
-    # find_word()
-    # if not jk:
-
 if __name__ == "__main__":
     # host = "80.211.195.240"
     # port = 80
-    host = "192.168.100.4"
+    host = "localhost"
     # host = "0.0.0.0"
     port = 8080
     db.init_app(app)
