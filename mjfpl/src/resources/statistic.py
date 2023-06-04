@@ -1,4 +1,4 @@
-from mjfpl.model.statistics_model import StatisticModel
+from model.statistics_model import StatisticModel
 
 from http import HTTPStatus
 

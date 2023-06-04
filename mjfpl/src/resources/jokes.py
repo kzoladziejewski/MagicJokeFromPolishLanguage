@@ -1,7 +1,7 @@
 from flask_restful import Resource
 from flask_cors import cross_origin
 
-from mjfpl.model.jokes_model import JokeModel
+from model.jokes_model import JokeModel
 
 from random import choice
 

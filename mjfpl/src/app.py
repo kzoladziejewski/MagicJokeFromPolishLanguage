@@ -4,12 +4,8 @@ from flask_cors import CORS
 
 from db import db
 
-from mjfpl.resource.jokes import JokeResource
-from mjfpl.resource.create_jokes import CreateJokeResource
-from mjfpl.resource.statistic import StatisticResource
-from mjfpl.resource.hello_world import HelloWorld
-from mjfpl.application.read_all_data_from_wikipedia import FindAllWords
-from mjfpl.model.done_link import DoneLink
+from resources import JokeResource, CreateJokeResource, StatisticResource, HelloWorld
+from application.read_all_data_from_wikipedia import FindAllWords
 
 import logging
 import datetime
@@ -19,7 +15,7 @@ logging.getLogger().addHandler(logging.StreamHandler())
 
 app = Flask(__name__)
 CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///mjfpl.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///src.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['CORS_HEADERS'] = 'Content-Type'
 api = Api(app)

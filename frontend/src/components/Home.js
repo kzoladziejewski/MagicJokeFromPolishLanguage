@@ -14,7 +14,7 @@ const Home = () => {
     }, [])
 
     const fetchStatus = () => {
-        return fetch('http://127.0.0.1:8080/joke')
+        return fetch('http://localhost:8080/joke')
             .then(response => response.json())
     }
 

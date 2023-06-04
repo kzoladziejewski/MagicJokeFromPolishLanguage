@@ -1,7 +1,7 @@
 from flask_restful import Resource
 
-from mjfpl.model.jokes_model import JokeModel
-from mjfpl.model.words_model import WordsModel
+from model.jokes_model import JokeModel
+from model.words_model import WordsModel
 
 from http import HTTPStatus
 class CreateJokeResource(Resource):

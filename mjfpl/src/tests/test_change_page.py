@@ -1,9 +1,7 @@
-import pytest
-
 from unittest.mock import patch
 from unittest.mock import MagicMock
 
-from .mjfpl.application.read_all_data_from_wikipedia import FindAllWords
+from .application.read_all_data_from_wikipedia import FindAllWords
 
 import requests
 import pathlib

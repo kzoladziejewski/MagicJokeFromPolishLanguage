@@ -5,7 +5,6 @@ Class for download all nouns from this webpage:
 https://pl.wiktionary.org/wiki/Kategoria:J%C4%99zyk_polski_-_rzeczowniki
 And save to database:
 """
-
 import requests
 import logging
 
@@ -13,7 +12,7 @@ from time import sleep
 
 from bs4 import BeautifulSoup
 
-from mjfpl.model.words_model import WordsModel
+from model.words_model import WordsModel
 
 
 class FindAllWords:
