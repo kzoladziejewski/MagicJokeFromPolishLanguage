@@ -53,7 +53,7 @@ const vote = (vote) => {
         <button style={buttonStyle_good} onClick={() => vote(1)}> W sumie śmieszne </button>
         <button style={buttonStyle_bad} onClick={() => vote(1)}> Żałosne </button></center>
         <h4> Jeśli ten żart jest niepoprawny gramatycznie: </h4>
-        <a href="mailto:magicpolishjokes_help@kacpur.pl?subject=Zgłoszenie%20złego%20żartu!&body=%20">kliknuj tutaj </a>
+        <a href="mailto:magicpolishjokes_help@kacpur.pl?subject=Zgłoszenie%20złego%20żartu!&body=%20">kliknij tutaj </a>
         <h4>Albo napisz: magicpolishjokes_help@kacpur.pl </h4>
 
         <h4>API do wykorzystania:</h4>

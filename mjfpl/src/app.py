@@ -10,12 +10,14 @@ from application.read_all_data_from_wikipedia import FindAllWords
 import logging
 import datetime
 
+from  pathlib import Path
 logging.basicConfig(filename = f'flask_log_{datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")}.log', level=logging.INFO, format = f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 logging.getLogger().addHandler(logging.StreamHandler())
 
 app = Flask(__name__)
 CORS(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///src.db'
+path_to_database = Path(__file__).parent.joinpath('instance').joinpath('mjfpl.db').resolve()
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///'+str(path_to_database)
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['CORS_HEADERS'] = 'Content-Type'
 api = Api(app)
@@ -34,8 +36,8 @@ def find_word():
 if __name__ == "__main__":
     # host = "80.211.195.240"
     # port = 80
-    host = "localhost"
-    # host = "0.0.0.0"
+    # host = "localhost"
+    host = "0.0.0.0"
     port = 8080
     db.init_app(app)
     app.run(host, port, debug=False)
