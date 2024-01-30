@@ -1,4 +1,8 @@
-from db import db
+try:
+    from db import db
+except ModuleNotFoundError:
+    from mjfpl.src.db import db
+
 
 class DoneLink(db.Model):
     __tablename__ = "done_link"
@@ -18,7 +22,6 @@ class DoneLink(db.Model):
     def delete_to_db(self):
         db.session.delete(self)
         db.session.commit()
-
 
     @classmethod
     def skip_link_url(cls, url):

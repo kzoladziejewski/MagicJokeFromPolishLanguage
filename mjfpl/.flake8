@@ -1,0 +1,9 @@
+[flake8]
+max-line-length = 128
+exclude = .git/,
+          __init__.py
+
+select = E,F,W,B,SIM,C,A,I
+import-order-style=pep8
+tee = True
+output-file = flake8_output.txt

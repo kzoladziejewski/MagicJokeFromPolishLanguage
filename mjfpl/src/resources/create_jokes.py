@@ -1,9 +1,15 @@
 from flask_restful import Resource
 
-from model.jokes_model import JokeModel
-from model.words_model import WordsModel
+try:
+    from model.jokes_model import JokeModel
+    from model.words_model import WordsModel
+except ModuleNotFoundError:
+    from mjfpl.src.model.jokes_model import JokeModel
+    from mjfpl.src.model.words_model import WordsModel
 
 from http import HTTPStatus
+
+
 class CreateJokeResource(Resource):
 
     def get(self):
@@ -16,9 +22,9 @@ class CreateJokeResource(Resource):
 
                 if gen_first:
                     gen = gen_first.json().get("genitive")
-                    joke =  f"Jak jest {noun} bez {gen}"
+                    joke = f"Jak jest {noun} bez {gen}"
                     find_joke = JokeModel.find_skip_repeated_joke(joke)
                     if not find_joke:
-                        jok = JokeModel(joke_question = joke, joke_answer=noun[:1])
+                        jok = JokeModel(joke_question=joke, joke_answer=noun[:1])
                         jok.save_to_db()
-        return {HTTPStatus.OK, {"msg" : {"Jokes created"}}}
+        return {HTTPStatus.OK, {"msg": {"Jokes created"}}}

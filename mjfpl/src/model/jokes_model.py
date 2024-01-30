@@ -1,4 +1,8 @@
-from db import db
+try:
+    from db import db
+except ModuleNotFoundError:
+    from mjfpl.src.db import db
+
 
 class JokeModel(db.Model):
     __tablename__ = "jokes"
@@ -8,7 +12,7 @@ class JokeModel(db.Model):
 
     def json(self):
         return {
-            "id" : self._id,
+            "id": self._id,
             "joke_question": self.joke_question,
             "joke_answer": self.joke_answer,
         }
