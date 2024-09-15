@@ -28,3 +28,4 @@ class CreateJokeResource(Resource):
                         jok = JokeModel(joke_question=joke, joke_answer=noun[:1])
                         jok.save_to_db()
         return {HTTPStatus.OK, {"msg": {"Jokes created"}}}
+

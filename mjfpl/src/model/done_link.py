@@ -5,7 +5,7 @@ except ModuleNotFoundError:
 
 
 class DoneLink(db.Model):
-    __tablename__ = "done_link"
+    __tablename__ = "link"
     _id = db.Column(db.Integer, primary_key=True)
     done_link = db.Column(db.String(160))
 
@@ -24,5 +24,5 @@ class DoneLink(db.Model):
         db.session.commit()
 
     @classmethod
-    def skip_link_url(cls, url):
+    def get_url_link(cls, url):
         return cls.query.filter_by(done_link=url).first()

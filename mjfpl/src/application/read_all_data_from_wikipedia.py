@@ -11,10 +11,12 @@ import datetime
 from time import sleep
 
 from bs4 import BeautifulSoup
-from mjfpl.src.model.words_model import WordsModel
-logging.basicConfig(filename=f'read_all_data_from_wikipedia_{datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")}.log',
-                    level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
-logging.getLogger().addHandler(logging.StreamHandler())
+try:
+    from model.words_model import WordsModel
+    from model.done_link import DoneLink
+except Exception as error:
+    from mjfpl.src.model.words_model import WordsModel
+    from mjfpl.src.model.done_link import DoneLink
 
 class WordsMapping:
     def __init__(self, url):
@@ -31,6 +33,7 @@ class FindAllWords:
         self.url_to_regex = "https://pl.wiktionary.org/"
         self.links = [self.url]
         self.word_mapping = {}
+
     def exception_handler(self, url):
         for tries in range(0, 3):
             logging.info(f"Try nr {tries} to get content from {url}")
@@ -79,7 +82,9 @@ class FindAllWords:
         Method to get all nouns from links
         """
         for each_word, each_link in self.word_mapping.items():
-            content = self.exception_handler(each_link)
+            if WordsModel.find_genitive(each_word) or DoneLink.get_url_link(each_link):
+                continue
+            content = self.exception_handler(self.url_to_regex+each_link)
             soup = BeautifulSoup(content.text, features="html.parser")
             table_soup = soup.find_all('table')
             for table in table_soup:
@@ -91,15 +96,18 @@ class FindAllWords:
                 for row in rows:
                     columns = [column.text for column in row.findChildren('td')]
                     if columns:
-                        setattr(word_mapping_single, columns[0], columns[1])
-                        word_mapping_single.verb = 'jest'
-                        if len(columns) == 3:
+                        if len(columns) == 2:
+                            setattr(word_mapping_single, columns[0], columns[1])
+                            word_mapping_single.verb = 'jest'
+                        elif len(columns) == 3:
                             setattr(word_mapping_multi, columns[0], columns[2])
                             word_mapping_multi.verb = 'są'
 
                 for words in [word_mapping_single, word_mapping_multi]:
                     if words.verb:
                         self.add_nouns_to_database(words)
+            if not DoneLink.get_url_link(each_link):
+                DoneLink(done_link=each_link).save_to_db()
 
     def create_genitive(self, word: str) -> str:
         """
@@ -112,7 +120,7 @@ class FindAllWords:
         ending_letter = word[-1]
         return word[:-1] + changing_letter_mapping.get(ending_letter)
 
-    def add_nouns_to_database(self, words_mapping : 'WordsMapping'):
+    def add_nouns_to_database(self, words_mapping: 'WordsMapping'):
         """
         Method to iterate by all links and get nouns and genitive
         https://pl.wiktionary.org/wiki/abroseksualizm#pl
@@ -120,7 +128,8 @@ class FindAllWords:
         wm = WordsModel(**words_mapping.__dict__)
         wm.save_to_db()
 
+
 if __name__ == "__main__":
     faw = FindAllWords()
-    a = faw.get_all_nouns_from_link()
-    # faw.get_all_next_page()
+    faw.get_all_next_page()
+    faw.get_all_nouns_from_link()

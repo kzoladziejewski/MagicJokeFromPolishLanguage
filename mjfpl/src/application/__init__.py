@@ -1,1 +1,1 @@
-from .read_all_data_from_wikipedia import *
+from .read_all_data_from_wikipedia import FindAllWords

@@ -16,6 +16,7 @@ class WordsModel(db.Model):
     narzednik = db.Column(db.String(80))
     miejscownik = db.Column(db.String(80))
     wolacz = db.Column(db.String(80))
+    verb = db.Column(db.String(80))
     plural = db.Column(db.Boolean)
 
     def __init__(self, **kwargs):

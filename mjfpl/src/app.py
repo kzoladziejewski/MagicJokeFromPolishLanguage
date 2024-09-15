@@ -1,4 +1,5 @@
-import os
+import logging
+import datetime
 
 from flask import Flask
 from flask_restful import Api
@@ -8,10 +9,7 @@ from db import db
 from pathlib import Path
 from resources import JokeResource, CreateJokeResource, StatisticResource, HelloWorld
 from constant import PATH_TO_DATABASE
-from application.read_all_data_from_wikipedia import FindAllWords
-import logging
-import datetime
-
+from application import FindAllWords
 
 logging.basicConfig(filename=f'flask_log_{datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")}.log',
                     level=logging.INFO, format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
@@ -29,6 +27,13 @@ api.add_resource(CreateJokeResource, "/create_joke_resource")
 api.add_resource(JokeResource, "/joke")
 api.add_resource(StatisticResource, "/static")
 api.add_resource(HelloWorld, "/")
+
+class DataKeeper():
+    faw = FindAllWords()
+    client_is_runned = False
+
+data_keeper = DataKeeper()
+
 @app.route('/create_db')
 def before_first_request():
     if not Path(PATH_TO_DATABASE).is_file():
@@ -37,10 +42,13 @@ def before_first_request():
 
 @app.route('/find_words')
 def find_words():
-    faw = FindAllWords()
-    faw.get_all_next_page()
-    faw.get_all_hyperlink_to_details_of_nouns()
-    faw.get_all_nouns_from_link()
+    if not data_keeper.client_is_runned:
+        data_keeper.client_is_runned = True
+        data_keeper.faw.get_all_next_page()
+        data_keeper.faw.get_all_hyperlink_to_details_of_nouns()
+        data_keeper.faw.get_all_nouns_from_link()
+        data_keeper.client_is_runned = False
+    return {"200":"Client started"}
 
 if __name__ == "__main__":
     host = "0.0.0.0"
